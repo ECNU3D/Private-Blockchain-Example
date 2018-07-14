@@ -155,7 +155,7 @@ class Blockchain{
               return this.getBlock(i+1)
                   .then(block => {
                     let previousHash = block.previousBlockHash;
-                    if (blockHash!==previousHash) {
+                    if (blockhash!==previousHash) {
                       errorLog.push(i);
                     }
                   })
