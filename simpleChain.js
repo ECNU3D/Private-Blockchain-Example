@@ -138,7 +138,7 @@ class Blockchain{
     validateChain(){
       let errorLog = [];
       let promiseArray = [];
-      for (let i = 0; i < this.blockHeight; i++) {
+      for (let i = 0; i <= this.blockHeight; i++) {
         // validate block
         var promise = this.validateBlock(i)
             .then(result => {
@@ -151,7 +151,7 @@ class Blockchain{
         console.log('Checking block', i);
         promise = this.getBlock(i)
             .then(block => {
-              let blockhash = block.hash;
+              let blockHash = block.hash;
               return this.getBlock(i+1)
                   .then(block => {
                     let previousHash = block.previousBlockHash;
