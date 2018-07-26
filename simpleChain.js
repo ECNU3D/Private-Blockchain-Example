@@ -138,14 +138,14 @@ class Blockchain{
     validateChain(){
       let errorLog = [];
       let promiseArray = [];
-      for (let i = 0; i <= this.blockHeight; i++) {
+      for (let i = 0; i < this.blockHeight; i++) {
         // validate block
         var promise = this.validateBlock(i)
             .then(result => {
             if (!result) {
               errorLog.push(i);
             }
-        })
+        });
 
         promiseArray.push(promise);
         console.log('Checking block', i);
@@ -155,13 +155,22 @@ class Blockchain{
               return this.getBlock(i+1)
                   .then(block => {
                     let previousHash = block.previousBlockHash;
-                    if (blockhash!==previousHash) {
+                    if (blockHash!==previousHash) {
                       errorLog.push(i);
                     }
                   })
             });
         promiseArray.push(promise);
       }
+      //validate the final block in the chain
+      var promise = this.validateBlock(this.blockHeight)
+          .then(result => {
+            if (!result) {
+              errorLog.push(i);
+            }
+          });
+      promiseArray.push(promise);
+
       Promise.all(promiseArray)
              .then(() => {
                if (errorLog.length>0) {
