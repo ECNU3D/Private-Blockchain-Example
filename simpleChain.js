@@ -94,7 +94,8 @@ class Blockchain{
           console.log(JSON.stringify(newBlock));
           return db.put(newBlock.height, JSON.stringify(newBlock));
         })
-        .then(() => {return db.put('blocklength',this.blockHeight + 1)});
+        .then(() => {return db.put('blocklength',this.blockHeight + 1)})
+        .then(() => {return newBlock});
     }
     console.log("Add new Genesis block");
     newBlock.hash = SHA256(JSON.stringify(newBlock)).toString();
@@ -163,6 +164,7 @@ class Blockchain{
         promiseArray.push(promise);
       }
       //validate the final block in the chain
+      console.log('Checking block', this.blockHeight);
       var promise = this.validateBlock(this.blockHeight)
           .then(result => {
             if (!result) {
@@ -171,13 +173,15 @@ class Blockchain{
           });
       promiseArray.push(promise);
 
-      Promise.all(promiseArray)
+      return Promise.all(promiseArray)
              .then(() => {
                if (errorLog.length>0) {
                  console.log('Block errors = ' + errorLog.length);
                  console.log('Blocks: '+errorLog);
+                 return false;
                } else {
                  console.log('No errors detected');
+                 return true;
                }
              });
     }
